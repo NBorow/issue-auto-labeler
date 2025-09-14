@@ -1,7 +1,8 @@
 venv/
+.venv311/
 __pycache__/
 *.pyc
 data/
-model/
+models/
 checkpoints/
 results/*.png
