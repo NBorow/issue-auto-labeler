@@ -16,7 +16,22 @@ def load_thresholds(model_dir: Path, num_labels: int):
             return np.array(arr, dtype=np.float32)
     return np.full(num_labels, 0.5, dtype=np.float32)
 
+def join_title_body(title: str, body: str) -> str:
+    title = (title or "").strip()
+    body = (body or "").strip()
+    if title and body:
+        return f"{title}\n\n{body}"
+    return title or body
+
 def iter_texts(args):
+    # Prefer explicit title/body if provided
+    if getattr(args, "title", None) or getattr(args, "body", None):
+        combined = join_title_body(args.title, args.body)
+        if combined:
+            yield combined
+        return
+
+    # Back-compat: --text, --infile, or stdin
     if args.text:
         yield args.text
     elif args.infile:
@@ -32,6 +47,10 @@ def iter_texts(args):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--model_dir", type=str, default="models/NEWBEST")
+    # NEW: explicit fields (preferred)
+    ap.add_argument("--title", type=str, help="Issue title")
+    ap.add_argument("--body", type=str, help="Issue body/description")
+    # Back-compat flags
     ap.add_argument("--text", type=str, help="Single input text")
     ap.add_argument("--infile", type=str, help="File with one text per line")
     ap.add_argument("--topk", type=int, default=5)
