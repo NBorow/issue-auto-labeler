@@ -1,3 +1,13 @@
+---
+title: Issue Auto-Labeler
+emoji: 🏷️
+colorFrom: blue
+colorTo: purple
+sdk: gradio
+app_file: app.py
+pinned: false
+---
+
 # Issue Auto-Labeler
 Auto-label issues
 
